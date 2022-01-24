@@ -1,0 +1,17 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+
+{% if categories %}
+
+{% for cat in categories%}
+<a href="{% url 'index' %}category/{{cat}}"><h5>{{cat}}</h5></a>
+{% endfor %}
+
+{% else %}
+<h3>Watchlist is categories</h3>
+
+{%endif%}
+
+{% endblock %}

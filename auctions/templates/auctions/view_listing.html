@@ -1,0 +1,98 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<p>{{ error }}</p>
+
+
+
+{% if listing.active %}
+  
+<h2>{{ listing.title }}</h2>
+
+   {% if is_owner %} 
+   
+   <a href="{% url 'index' %}close/{{listing.id}}"><h6>Close Listing</h6></a>
+
+   {% else %}
+   
+   {% if user.is_authenticated %}
+   {% if in_watchlist %}
+
+   <a href="{% url 'index' %}{{listing.id}}/watchlist/remove"><h6>Remove from watchlist</h6></a>
+
+   {% else %}
+   <a href="{% url 'index' %}{{listing.id}}/watchlist/add"><h6>Add to watchlist</h6></a>
+   {% endif %}
+   {% endif %}
+
+   {%   endif %}
+
+   
+
+  
+
+    <h6>{{ listing.category }}</h6>
+    <img src="{{ listing.photo }}" alt="listing photo" width="100%">
+    <p class="card-text"><h4>price : {{ listing.starting_bid }}$</h4>
+      <p> description :{{ listing.description }}</p>
+   
+      {% if user.is_authenticated %}
+        <div class="form-group">
+            <form action="{% url 'index' %}listing/{{ listing.id }}/bid" method="POST">
+                 <div class="entry">
+               <input type="text" size="60" name="bid" placeholder="Bid on item">
+                {% csrf_token %}
+                <input type="submit" class="btn btn-primary" value="Bid" > 
+            </div>
+            </form>
+            </div> 
+           
+                <div class="card w-75">
+                    <div class="card-body">
+                      <h5 class="card-title">{{ user.username }}</h5>
+                      <p class="card-text">
+                          <div class="form-group">
+                        <form action="{% url 'index' %}listing/{{ listing.id }}/comment" method="POST">
+                             <div class="entry">
+                           <textarea  name="comment" rows="4" class="form-control"></textarea>
+                            {% csrf_token %}</p>
+                            <input type="submit" class="btn btn-primary" value="Add comment" > 
+                        </div>
+                    </form>
+                    </div> 
+                    </div>
+                  </div>
+
+                  {% endif %}
+
+    <h3> comments </h3>
+    {% for comment in comments %}
+
+    <div class="card w-75">
+      <div class="card-body">
+        <h5 class="card-title">{{ comment.username.username }}</h5>
+        <p class="card-text">{{ comment.comment }}
+      </div> 
+      </div>
+    </div>
+    
+{%endfor%}
+
+
+{% else %}
+
+{% if listing.winner.username == user.username %}
+
+<h1> You won this listing </h1>
+
+{% else %}
+
+<h1> This listing is no longer active </h1>
+
+{% endif %}
+
+{% endif %}
+
+
+
+{% endblock %}
